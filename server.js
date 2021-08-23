@@ -8,7 +8,7 @@ server.use(cors());
 server.use(express.json());
 const PORT = process.env.PORT;
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/drink', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true, useUnifiedTopology: true });
 
 
 const drinkSchema = new mongoose.Schema({
@@ -41,6 +41,9 @@ const userDrinksHandler = (req, res) => {
     const { email } = req.query;
     userModel.findOne({ email: email }, (err, result) => {
         if (err) { console.log(err); }
+        else if(!result){
+            res.send([]);
+        }
         else {
             res.send(result.drinks);
         }
